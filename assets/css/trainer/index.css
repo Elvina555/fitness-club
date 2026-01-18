@@ -1,0 +1,278 @@
+body {
+  width: 95%;
+}
+
+.trainer-dashboard {
+  margin: 0 auto;
+}
+
+.welcome-section {
+  margin-bottom: 40px;
+  background-color: var(--white);
+  padding: 30px;
+  border-radius: 12px;
+}
+
+.welcome-section h2 {
+  margin-bottom: 10px;
+  font-size: 28px;
+}
+
+.welcome-section p {
+  opacity: 0.9;
+  margin-bottom: 20px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.stat-card {
+  background: var(--white);
+  border: 1px solid var(--orange);
+  border-radius: 12px;
+  padding: 25px;
+  text-align: center;
+  position: relative;
+}
+
+.stat-value {
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--green);
+  margin-bottom: 5px;
+}
+
+.stat-label {
+  color: var(--dark-blue);
+  font-size: 12px;
+}
+
+.stat-info {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 12px;
+  color: var(--light-green);
+  cursor: help;
+}
+
+.upcoming-workouts {
+  margin-top: 40px;
+}
+
+.upcoming-workouts h3 {
+  color: var(--dark-blue);
+  margin-bottom: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.workouts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 25px;
+}
+
+.workout-card {
+  background: var(--white);
+  border: 1px solid var(--orange);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.workout-header {
+  padding: 32px;
+  border: 1px solid var(--orange);
+  border-radius: 32px;
+}
+
+.workout-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.workout-date {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--green);
+  font-size: 16px;
+}
+
+.workout-body {
+  padding: 20px;
+}
+
+.workout-details {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.detail-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.detail-label {
+  font-weight: 500;
+  color: var(--dark-blue);
+  min-width: 120px;
+}
+
+.detail-value {
+  color: var(--green);
+}
+
+.progress-container {
+  margin: 20px 0;
+}
+
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.progress-bar {
+  height: 8px;
+  background: var(--orange);
+  border-radius: 1px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--green);
+  border-radius: 4px;
+}
+
+.workout-actions {
+  padding: 20px;
+  border-top: 1px solid var(--orange);
+  display: flex;
+  gap: 10px;
+}
+
+
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--color-text-secondary);
+}
+
+.no-upcoming {
+  grid-column: 1 / -1;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.quick-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+}
+
+.view-all-link {
+  font-size: 14px;
+  color: var(--dark-blue);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.view-all-link:hover {
+  text-decoration: underline;
+}
+
+.workout-priority {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  margin-left: 10px;
+}
+
+.priority-high {
+  background: #dc3545;
+  color: white;
+}
+
+.priority-medium {
+  background: #ffc107;
+  color: #000;
+}
+
+.priority-low {
+  background: #28a745;
+  color: white;
+}
+
+.debug-info {
+  margin-top: 20px;
+  padding: 15px;
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 10px;
+  font-size: 14px;
+  color: var(--dark-blue);
+}
+
+.debug-info h4 {
+  margin-bottom: 10px;
+}
+
+.workout-status {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 500;
+  margin-left: 10px;
+}
+
+.status-scheduled {
+  background: #17a2b8;
+  color: white;
+}
+
+.status-in-progress {
+  background: #007bff;
+  color: white;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.7;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}

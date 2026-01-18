@@ -1,0 +1,94 @@
+.notification-card {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  transition: all 0.3s ease;
+}
+
+.notification-card.unread {
+  background: var(--orange);
+}
+
+.notification-card.read {
+  background: var(--light-orange);
+  opacity: 0.8;
+}
+
+.notification-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.notification-title {
+  font-weight: bold;
+  color: var(--dark-blue);
+  margin: 0;
+}
+
+.notification-date {
+  color: var(--dark-blue);
+  font-size: 0.9rem;
+}
+
+.notification-message {
+  color: var(--dark-blue);
+  margin: 0.5rem 0;
+}
+
+.notification-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.notification-type {
+  display: inline-block;
+  padding: 0.2rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  margin-right: 0.5rem;
+}
+
+.type-booking {
+  background: #e3f2fd;
+  color: #1565c0;
+}
+
+.type-reminder {
+  background: #fff3e0;
+  color: #ef6c00;
+}
+
+.type-subscription {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.type-review {
+  background: #f3e5f5;
+  color: #7b1fa2;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem;
+  color: #666;
+}
+
+.empty-state i {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.page-header {
+  margin-bottom: 16px;
+}
+
+.header-actions button {
+  width: 25%;
+}

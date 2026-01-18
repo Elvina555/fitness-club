@@ -1,0 +1,30 @@
+<FilesMatch "\.(css)$">
+    Header set Content-Type "text/css"
+</FilesMatch>
+DirectoryIndex main_index.php
+
+
+# обработку PHP
+AddType application/x-httpd-php .php
+
+# кодировка
+AddDefaultCharset UTF-8
+
+# mod_rewrite
+RewriteEngine On
+
+# Если файл\папка существуют - используем 
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Все на index.php
+RewriteRule ^ index.php [L]
+
+# ЗАПРЕТ к системным файлам
+<FilesMatch "^\.">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# ЗАПРЕТ к папкам
+Options -Indexes

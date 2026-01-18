@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<!-- мета файлы и стили -->
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="assets/css/common/register.css">
+  <link rel="stylesheet" href="assets/css/common/UI.css">
+  <title>Регистрация - Фитнес-клуб</title>
+  <style>
+    /* Стиль для анимации загрузки */
+    .loading-spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255, 255, 255, .3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 1s ease-in-out infinite;
+      margin-right: 10px;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+</head>
+<!-- основной контент на форме регистрации -->
+
+<body>
+  <div class="container">
+    <h1>Регистрация</h1>
+
+    <div class="error" id="errorMessage"></div>
+    <div class="success" id="successMessage"></div>
+
+    <form id="registerForm">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required>
+      </div>
+
+      <div class="form-group">
+        <label for="password" style="color: black;">Пароль (мин. 6 символов)</label>
+        <input type="password" id="password" name="password" required minlength="6">
+      </div>
+
+      <div class="form-group">
+        <label for="password_confirm" style="color: black;">Подтвердите пароль</label>
+        <input type="password" id="password_confirm" name="password_confirm" required>
+      </div>
+
+      <div class="form-group">
+        <label for="first_name" style="color: black;">Имя</label>
+        <input type="text" id="first_name" name="first_name" required>
+      </div>
+
+      <div class="form-group">
+        <label for="last_name" style="color: black;">Фамилия</label>
+        <input type="text" id="last_name" name="last_name" required>
+      </div>
+
+      <div class="form-group">
+        <label for="phone" style="color: black;">Телефон (необязательно)</label>
+        <input type="tel" id="phone" name="phone">
+      </div>
+
+      <button type="submit" class="submit-btn">Зарегистрироваться</button>
+    </form>
+
+    <div class="links">
+      <p>Уже есть аккаунт? <a href="login.html">Войдите</a></p>
+      <a href="main_index.php">На главную</a>
+    </div>
+  </div>
+
+  <script>
+    // добавляем обработчик при клике на кнопку подтверждения регистрации
+    document.getElementById('registerForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      // Скрываем предыдущие сообщения
+      document.getElementById('errorMessage').style.display = 'none';
+      document.getElementById('successMessage').style.display = 'none';
+
+      // получаем пароль и его подтверждение
+      const password = document.getElementById('password').value;
+      const passwordConfirm = document.getElementById('password_confirm').value;
+
+      // валидация
+      if (password !== passwordConfirm) {
+        showError('Пароли не совпадают');
+        return;
+      }
+      if (password.length < 6) {
+        showError('Пароль должен быть не менее 6 символов');
+        return;
+      }
+
+      // собираем все вместе
+      const formData = {
+        email: document.getElementById('email').value.trim(),
+        password: document.getElementById('password').value,
+        password_confirm: document.getElementById('password_confirm').value,
+        first_name: document.getElementById('first_name').value.trim(),
+        last_name: document.getElementById('last_name').value.trim(),
+        phone: document.getElementById('phone').value.trim() || null
+      };
+
+      const submitBtn = document.querySelector('button[type="submit"]');
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<span class="loading-spinner"></span>Регистрация...';
+
+      // фетчим данные через апишку регистрации
+      try {
+        const response = await fetch('api/register.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(formData)
+        });
+
+        const result = await response.json();
+
+        // если все ок
+        if (result.success) {
+          showSuccess('Регистрация прошла успешно!');
+
+          document.getElementById('registerForm').style.opacity = '0.5';
+          document.getElementById('registerForm').style.pointerEvents = 'none';
+
+          localStorage.setItem('fitness_token', result.data.token);
+          localStorage.setItem('fitness_user', JSON.stringify(result.data.user));
+
+          setTimeout(() => {
+            window.location.href = 'login.html';
+          }, 2000);
+
+        } else {
+          showError(result.message || 'Ошибка при регистрации');
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Зарегистрироваться';
+        }
+      } catch (error) {
+        showError('Ошибка сети: ' + error.message);
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Зарегистрироваться';
+      }
+    });
+
+    // функции показа результатов 
+    function showError(message) {
+      const errorDiv = document.getElementById('errorMessage');
+      errorDiv.textContent = message;
+      errorDiv.style.display = 'block';
+
+      // автоскрытие ошибки через 5 секунд
+      setTimeout(() => {
+        errorDiv.style.display = 'none';
+      }, 5000);
+    }
+
+    function showSuccess(message) {
+      const successDiv = document.getElementById('successMessage');
+      successDiv.textContent = message;
+      successDiv.style.display = 'block';
+    }
+  </script>
+</body>
+
+</html>

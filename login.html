@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Вход в систему</title>
+  <link rel="stylesheet" href="../assets/css/common/login.css">
+  <link rel="stylesheet" href="../assets/css/common/UI.css">
+</head>
+
+<body>
+  <div class="login-container">
+    <h1>Вход в систему</h1>
+
+    <div class="error-message" id="errorMsg"></div>
+    <div class="success-message" id="successMsg"></div>
+
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="email" style="color: black;">Email</label>
+        <input type="email" id="email" name="email" required>
+      </div>
+
+      <div class="form-group password-toggle">
+        <label for="password" style="color: black;">Пароль</label>
+        <input type="password" id="password" name="password" required>
+        <button type="button" id="togglePassword">
+          <img src="assets/img/common/passwordToggle.png" alt="" class="toggle-img">
+        </button>
+      </div>
+
+
+
+      <button type="submit" class="submit-btn">Войти</button>
+      <div class="loading" id="loading">Загрузка...</div>
+    </form>
+
+    <div class="auth-links">
+      <a href="/register.html">Зарегистрироваться</a>
+      <a href="main_index.php">На главную</a>
+    </div>
+  </div>
+
+  <script>
+    // добавляем обработчки при клике на кнопку показа пароля
+    document.getElementById('togglePassword').addEventListener('click', function (e) {
+      e.preventDefault();
+      const passwordInput = document.getElementById('password'); //получаем пароль
+      const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password'; //получаем тип инпута
+      passwordInput.setAttribute('type', type); // устанавливаем тип инпута (нужно для того, чтобы не было ошибок при обработке пароля в разных состоянихя - скрытого и показаннного)
+    });
+
+    // логика при нажатии на авторизацию
+    document.getElementById('loginForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const errorMsg = document.getElementById('errorMsg');
+      const successMsg = document.getElementById('successMsg');
+      const loading = document.getElementById('loading');
+      const submitBtn = document.querySelector('.submit-btn');
+
+      errorMsg.style.display = 'none';
+      successMsg.style.display = 'none';
+      loading.style.display = 'block';
+      submitBtn.disabled = true;
+
+      // пробуем зафетчить данные через апи авторизации
+      try {
+        const response = await fetch('/api/login.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await response.json();
+
+        if (!data.success) {
+          errorMsg.textContent = data.message || 'Ошибка авторизации';
+          errorMsg.style.display = 'block';
+          loading.style.display = 'none';
+          submitBtn.disabled = false;
+          return;
+        }
+
+        successMsg.textContent = 'Авторизация успешна. Перенаправление...';
+        successMsg.style.display = 'block';
+
+        const token = data.data.token;
+        const role = data.data.user.role;
+        let redirectUrl;
+
+        // в зависимости от данных в бд присваиваем входяшему роль и в зависимости от роил открываем необходимый интерфейс
+        if (role === 'client') {
+          document.cookie = "fitness_token=" + response.token + "; path=/; max-age=" + 60 * 60 * 24;
+          redirectUrl = '/client/index.php?token=' + encodeURIComponent(token) + '&just_logged_in=true';
+        } else if (role === 'trainer') {
+          document.cookie = "fitness_token=" + response.token + "; path=/; max-age=" + 60 * 60 * 24;
+          redirectUrl = '/trainer/index.php?token=' + encodeURIComponent(token) + '&just_logged_in=true';
+        } else if (role === 'admin') {
+          document.cookie = "fitness_token=" + response.token + "; path=/; max-age=" + 60 * 60 * 24;
+          redirectUrl = '/admin/index.php?token=' + encodeURIComponent(token) + '&just_logged_in=true';
+        } else {
+          redirectUrl = '/';
+        }
+        // делаем задержку 
+        setTimeout(() => {
+          window.location.href = redirectUrl;
+        }, 500);
+
+        // вывод ошибки
+      } catch (error) {
+        console.error('Ошибка:', error);
+        errorMsg.textContent = 'Сетевая ошибка. Попробуйте позже.';
+        errorMsg.style.display = 'block';
+        loading.style.display = 'none';
+        submitBtn.disabled = false;
+      }
+    });
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,98 @@
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(180deg, var(--orange) 50%, var(--white) 100%);
+  margin: 0;
+}
+
+.login-container {
+  background: var(--white);
+  padding: 40px;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.login-container h1 {
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: var(--orange);
+}
+
+.password-toggle {
+  position: relative;
+}
+
+
+
+.password-toggle button {
+  position: absolute;
+  right: 10px;
+  top: 36px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+
+
+.submit-btn:hover {
+  transform: translateY(-2px);
+}
+
+.submit-btn:active {
+  transform: translateY(0);
+}
+
+.error-message {
+  color: #e74c3c;
+  margin-bottom: 20px;
+  padding: 12px;
+  background: #fadbd8;
+  border-radius: 4px;
+  display: none;
+}
+
+.success-message {
+  color: #27ae60;
+  margin-bottom: 20px;
+  padding: 12px;
+  background: #d5f4e6;
+  border-radius: 4px;
+  display: none;
+}
+
+.auth-links {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.auth-links a {
+  color: var(--green);
+  margin: 0 10px;
+}
+
+.loading {
+  display: none;
+  text-align: center;
+  color: var(--green);
+}
