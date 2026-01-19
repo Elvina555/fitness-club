@@ -19,16 +19,17 @@ $currentDateTime = date('Y-m-d H:i:s');
 // ВООБЩЕ ближайшие 3 тренировки которые ЕЩЁ НЕ ПРОШЛИ
 $upcomingWorkouts = $db->fetchAll(
   "SELECT w.*, 
-            COUNT(b.id) as bookings_count,
-            (SELECT COUNT(*) FROM bookings b2 WHERE b2.workout_id = w.id AND b2.status = 'attended') as attended_count
-     FROM workouts w
-     LEFT JOIN bookings b ON w.id = b.workout_id AND b.status IN ('confirmed', 'attended')
-     WHERE w.trainer_id = ? 
-     AND w.status = 'scheduled'
-     AND (w.workout_date > CURDATE() OR (w.workout_date = CURDATE() AND w.end_time > CURTIME()))
-     GROUP BY w.id
-     ORDER BY w.workout_date ASC, w.start_time ASC
-     LIMIT 3",
+          COUNT(b.id) as bookings_count,
+          (SELECT COUNT(*) FROM bookings b2 WHERE b2.workout_id = w.id AND b2.status = 'attended') as attended_count
+   FROM workouts w
+   LEFT JOIN bookings b ON w.id = b.workout_id AND b.status IN ('confirmed', 'attended')
+   WHERE w.trainer_id = ? 
+   AND w.status = 'scheduled'
+   AND w.workout_date >= CURDATE()
+   AND (w.workout_date > CURDATE() OR w.start_time >= CURTIME())
+   GROUP BY w.id
+   ORDER BY w.workout_date ASC, w.start_time ASC
+   LIMIT 3",
   [$trainerId]
 );
 
@@ -174,12 +175,11 @@ if (isset($_GET['token'])) {
         </div>
 
         <!-- ближайшие трени (которые ЕЩЁ НЕ ПРОШЛИ) -->
+        <!-- ближайшие трени (которые ЕЩЁ НЕ ПРОШЛИ) -->
         <div class="upcoming-workouts">
           <h3>
             Ваши ближайшие тренировки
-            <span>
-              (предстоящих: <?php echo $allUpcomingCount['count'] ?? 0; ?>)
-            </span>
+            <span>(предстоящих: <?php echo $allUpcomingCount['count'] ?? 0; ?>)</span>
             <?php if (($allUpcomingCount['count'] ?? 0) > 3): ?>
               <a href="schedule.php" class="view-all-link">
                 Показать все (<?php echo ($allUpcomingCount['count'] ?? 0) - 3; ?> еще) →
@@ -204,7 +204,7 @@ if (isset($_GET['token'])) {
                   $priorityClass = 'priority-high';
                   $hoursUntil = round(($workoutStartTime - $currentTime) / 3600, 1);
                   if ($isInProgress) {
-                    $priorityText = "Идет сейчас";
+                    $priorityText = "Сейчас";
                   } else {
                     $priorityText = "Через " . max(0, $hoursUntil) . " ч";
                   }
@@ -214,15 +214,23 @@ if (isset($_GET['token'])) {
                 } else {
                   $priorityClass = 'priority-low';
                   $daysUntil = floor(($workoutStartTime - $currentTime) / (60 * 60 * 24));
-                  $priorityText = "Через $daysUntil дн";
+                  $priorityText = "$daysUntil дн";
                 }
+
+                $start = strtotime($workout['start_time']);
+                $end = strtotime($workout['end_time']);
+                $duration = round(($end - $start) / 3600, 1);
                 ?>
                 <div class="workout-card">
                   <div class="workout-header">
-                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                      <h4 class="workout-title">
-                        <?php echo htmlspecialchars($workout['title']); ?>
-                        <span class="workout-priority <?php echo $priorityClass; ?>">
+                    <div
+                      style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+                      <div>
+                        <span class="workout-number"
+                          style="background: var(--light-green); color: white; padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: 600;">
+                          #<?php echo $index + 1; ?>
+                        </span>
+                        <span class="workout-priority <?php echo $priorityClass; ?>" style="margin-left: 8px;">
                           <?php echo $priorityText; ?>
                         </span>
                         <?php if ($isInProgress): ?>
@@ -230,13 +238,14 @@ if (isset($_GET['token'])) {
                         <?php else: ?>
                           <span class="workout-status status-scheduled">Запланирована</span>
                         <?php endif; ?>
-                      </h4>
-                      <span style="font-size: var(--font-size-sm); color: var(--color-text-secondary);">
-                        #<?php echo $index + 1; ?> из 3
-                      </span>
+                      </div>
                     </div>
+
+                    <h4 class="workout-title" style="margin: 10px 0; font-size: 20px;">
+                      <?php echo htmlspecialchars($workout['title']); ?>
+                    </h4>
+
                     <div class="workout-date">
-                      <span></span>
                       <?php if ($isToday): ?>
                         <span><strong>Сегодня</strong>, <?php echo date('H:i', strtotime($workout['start_time'])); ?></span>
                       <?php elseif ($isTomorrow): ?>
@@ -256,37 +265,26 @@ if (isset($_GET['token'])) {
                         </span>
                       </div>
                       <div class="detail-item">
-                        <span class="detail-label">Макс. участников:</span>
-                        <span class="detail-value"><?php echo $workout['max_participants']; ?></span>
-                      </div>
-                      <div class="detail-item">
-                        <span class="detail-label">Записано:</span>
+                        <span class="detail-label">Участники:</span>
                         <span class="detail-value">
-                          <?php echo $workout['bookings_count']; ?> человек
-                          <?php if ($workout['bookings_count'] > 0): ?>
-                            <span style="color: var(--color-primary); margin-left: 10px;">
-                              <?php echo $workout['attended_count'] ?? 0; ?> посетило
+                          <strong><?php echo $workout['bookings_count']; ?></strong>/<?php echo $workout['max_participants']; ?>
+                          <?php if ($workout['attended_count'] > 0): ?>
+                            <span style="color: #17a2b8; margin-left: 5px;">
+                              (<?php echo $workout['attended_count']; ?> посетило)
                             </span>
                           <?php endif; ?>
                         </span>
                       </div>
                       <div class="detail-item">
                         <span class="detail-label">Длительность:</span>
-                        <span class="detail-value">
-                          <?php
-                          $start = strtotime($workout['start_time']);
-                          $end = strtotime($workout['end_time']);
-                          $duration = round(($end - $start) / 3600, 1);
-                          echo $duration . ' ч';
-                          ?>
-                        </span>
+                        <span class="detail-value"><?php echo $duration; ?> ч</span>
                       </div>
                     </div>
 
                     <div class="progress-container">
                       <div class="progress-label">
                         <span>Загруженность</span>
-                        <span><?php echo $occupancy; ?>%</span>
+                        <span><strong><?php echo $occupancy; ?>%</strong></span>
                       </div>
                       <div class="progress-bar">
                         <div class="progress-fill" style="width: <?php echo min($occupancy, 100); ?>%"></div>
@@ -295,7 +293,7 @@ if (isset($_GET['token'])) {
 
                     <?php if ($workout['description']): ?>
                       <div
-                        style="color: var(--color-text-secondary); font-size: var(--font-size-sm); margin-top: 15px; padding: 10px; background: var(--color-secondary); border-radius: var(--radius-base);">
+                        style="color: var(--color-text-secondary); font-size: 14px; margin-top: 15px; padding: 10px; background: #f8f9fa; border-radius: 8px; border-left: 3px solid var(--green);">
                         <?php echo htmlspecialchars($workout['description']); ?>
                       </div>
                     <?php endif; ?>
@@ -306,22 +304,16 @@ if (isset($_GET['token'])) {
                       <?php if ($isInProgress): ?>
                         <a href="attedance.php?workout_id=<?php echo $workout['id']; ?>" class="submit-btn"
                           style="background: #28a745;">
-                          <span></span> Идет сейчас - отметить!
+                          Отметить посещение
                         </a>
                       <?php else: ?>
                         <a href="attedance.php?workout_id=<?php echo $workout['id']; ?>" class="submit-btn">
-                          <span></span> Отметить посещение
+                          Посещаемость
                         </a>
                       <?php endif; ?>
-                      <a href="schedule.php?edit=<?php echo $workout['id']; ?>" class="submit-btn">
-                        <span></span> Редактировать
-                      </a>
                     <?php else: ?>
-                      <a href="schedule.php?edit=<?php echo $workout['id']; ?>" class="submit-btn">
-                        <span></span> Редактировать
-                      </a>
                       <a href="attedance.php?workout_id=<?php echo $workout['id']; ?>" class="submit-btn">
-                        <span></span> Участники (<?php echo $workout['bookings_count']; ?>)
+                        👥 Участники (<?php echo $workout['bookings_count']; ?>)
                       </a>
                     <?php endif; ?>
                   </div>
@@ -330,11 +322,11 @@ if (isset($_GET['token'])) {
             </div>
           <?php else: ?>
             <div class="empty-state no-upcoming">
-              <div class="empty-state-icon"></div>
               <h3>Нет предстоящих тренировок</h3>
-              <p>У вас нет запланированных тренировок на ближайшее время, которые еще не прошли.</p>
-              <a href="schedule.php" class="btn-primary" style="margin-top: 20px; display: inline-block;">
-                <span></span> Создать новую тренировку
+              <p>У вас нет запланированных тренировок на ближайшее время.</p>
+              <a href="schedule.php" class="submit-btn"
+                style="margin-top: 20px; display: inline-block; width: auto; padding: 12px 24px;">
+                + Создать тренировку
               </a>
             </div>
           <?php endif; ?>

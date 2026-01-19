@@ -156,9 +156,11 @@ $workouts = $db->fetchAll(
                       <td class="actions-cell">
                         <?php if ($workout['status'] == 'scheduled' && !$isPast): ?>
                           <?php if ($isToday): ?>
-                            <a href="attedance.php?workout_id=<?php echo $workout['id']; ?>" class="btn btn-success">
-                              <i class="fas fa-check"></i> Отметить
-                            </a>
+                            <button class="btn btn-warning" class="btn">
+                              <a href="attedance.php?workout_id=<?php echo $workout['id']; ?>" class="btn btn-warning">
+                                <i class="fas fa-check"></i> Отметить
+                              </a>
+                            </button>
                           <?php endif; ?>
                           <button class="btn btn-warning"
                             onclick="openEditModal(<?php echo htmlspecialchars(json_encode($workout)); ?>)">
@@ -169,13 +171,17 @@ $workouts = $db->fetchAll(
                             <i class="fas fa-times"></i> Отменить
                           </button>
                         <?php elseif ($workout['status'] == 'completed'): ?>
-                          <a href="attedance.php?workout_id=<?php echo $workout['id']; ?>" class="btn btn-primary">
-                            <i class="fas fa-users"></i> Посетители
-                          </a>
+                          <button class="btn btn-warning" class="btn">
+                            <a href="attedance.php?workout_id=<?php echo $workout['id']; ?>" class="btn btn-primary">
+                              <i class="fas fa-users"></i> Посетители
+                            </a>
+                          </button>
                         <?php elseif ($workout['status'] == 'cancelled'): ?>
-                          <span class="btn btn-secondary" style="cursor: default;">
-                            <i class="fas fa-ban"></i> —
-                          </span>
+                          <button class="btn btn-warning" class="btn">
+                            <span class="btn btn-secondary" style="cursor: default;">
+                              <i class="fas fa-ban"></i> —
+                            </span>
+                          </button>
                         <?php endif; ?>
                       </td>
                     </tr>

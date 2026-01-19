@@ -71,7 +71,6 @@ $pageTitle = match ($role) {
         <li><a href="users.php" class="active">Пользователи</a></li>
         <li><a href="workouts.php">Тренировки</a></li>
         <li><a href="reports.php">Отчеты</a></li>
-        <li><a href="reviews.php">Отзывы</a></li>
         <li><a href="../logout.php">Выход</a></li>
       </ul>
     </nav>

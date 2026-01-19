@@ -81,7 +81,6 @@ $stats['monthly_revenue'] = $revenue['revenue'];
         <li><a href="index.php" class="active">Главная</a></li>
         <li><a href="users.php">Пользователи</a></li>
         <li><a href="workouts.php">Тренировки</a></li>
-        <li><a href="reviews.php">Отзывы</a></li>
         <li><a href="reports.php">Отчеты</a></li>
         <li><a href="../logout.php">Выход</a></li>
       </ul>
@@ -144,7 +143,6 @@ $stats['monthly_revenue'] = $revenue['revenue'];
             <h3>Контент</h3>
             <ul class="action-list">
               <li><a href="workouts.php">Расписание тренировок</a></li>
-              <li><a href="reviews.php">Модерация отзывов</a></li>
             </ul>
           </div>
 
@@ -152,7 +150,7 @@ $stats['monthly_revenue'] = $revenue['revenue'];
           <div class="action-card">
             <h3>Финансы и отчеты</h3>
             <ul class="action-list">
-              <li><a href="reports.php">Статистика и отчеты</a></li>
+              <li><a href="reports.php">Отчеты</a></li>
             </ul>
           </div>
         </div>

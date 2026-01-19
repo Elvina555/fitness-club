@@ -170,7 +170,7 @@
 }
 
 .tab-btn.active {
-  color: var(--light-orange);
+  color: black !important;
   background: var(--white);
 }
 

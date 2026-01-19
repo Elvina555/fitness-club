@@ -90,6 +90,7 @@
 .actions-cell .btn {
   flex-shrink: 0;
   min-width: fit-content;
+  margin: 4px;
 }
 
 .modal {

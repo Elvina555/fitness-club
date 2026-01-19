@@ -72,12 +72,11 @@ $workouts = $db->fetchAll($sql, $params);
             </div>
             <!-- навигация -->
             <ul class="navbar-menu">
-                <li><a href="index.php">Главная</a></li>
-                <li><a href="users.php">Пользователи</a></li>
-                <li><a href="workouts.php">Тренировки</a></li>
-                <li><a href="reviews.php">Отзывы</a></li>
-                <li><a href="reports.php">Отчеты</a></li>
-                <li><a href="../logout.php">Выход</a></li>
+        <li><a href="index.php" >Главная</a></li>
+        <li><a href="users.php">Пользователи</a></li>
+        <li><a href="workouts.php" class="active">Тренировки</a></li>
+        <li><a href="reports.php">Отчеты</a></li>
+        <li><a href="../logout.php">Выход</a></li>
             </ul>
         </nav>
 
